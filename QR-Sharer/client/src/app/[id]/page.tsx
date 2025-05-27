@@ -19,8 +19,6 @@ export default function QRPage() {
   const [textColor, setTextColor] = useState('text-white');
   const [calculating, setCalculating] = useState(false);
 
-
-
   useEffect(() => {
     if (!id) return;
     const stored = localStorage.getItem(id.toString());

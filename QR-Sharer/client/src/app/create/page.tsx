@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { ThemeSwitch } from '@/components/ui/theme_switch';
+import { Button } from '@/src/components/ui/button';
+import { Input } from '@/src/components/ui/input';
+import { Switch } from '@/src/components/ui/switch';
+import { ThemeSwitch } from '@/src/components/ui/theme_switch';
 
 export default function CreatePage() {
   const router = useRouter();

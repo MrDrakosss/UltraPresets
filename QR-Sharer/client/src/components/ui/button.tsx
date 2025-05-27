@@ -1,5 +1,3 @@
-// components/ui/button.tsx
-
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'default' | 'outline';
 };

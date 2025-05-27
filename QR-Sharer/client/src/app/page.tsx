@@ -1,9 +1,8 @@
-// This file now only lists QR codes and routes to /create and /edit/[id]
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ThemeSwitch } from '@/components/ui/theme_switch';
+import { Button } from '@/src/components/ui/button';
+import { ThemeSwitch } from '@/src/components/ui/theme_switch';
 import { useRouter } from 'next/navigation';
 
 export default function QRListPage() {
