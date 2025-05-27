@@ -13,6 +13,8 @@ export const ThemeSwitch = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  return (<></>);
+
   return (
     <button
       onClick={toggleTheme}
