@@ -14,9 +14,15 @@ export class FileService {
     this.basePath = this.configService.get<string>('BASE_PATH') ?? '';
     this.configPath = this.configService.get<string>('FILE_CONFIG_PATH') ?? '';
 
-    // Ha létezik a config fájl, akkor beolvassuk az összes metaadatot,
-    // ha nem, akkor létrehozunk egy új üres objektumot "Files" kulccsal
-    this.meta = fs.pathExistsSync(this.configPath) ? fs.readJsonSync(this.configPath) : { 'Files': {} }
+    // Metaadat betöltése fájlból vagy inicializálása üres szerkezettel
+    this.meta = fs.pathExistsSync(this.configPath)
+      ? fs.readJsonSync(this.configPath)
+      : { Files: {} };
+
+    // Biztonság kedvéért inicializáljuk a "Files" kulcsot, ha hiányzik
+    if (!this.meta.Files) {
+      this.meta.Files = {};
+    }
   }
 
   /**
@@ -24,10 +30,8 @@ export class FileService {
    * és visszaadja azok adatait, metaadatokkal együtt.
    */
   async listFiles(): Promise<any[]> {
-    // Összegyűjtjük az összes fájl abszolút útvonalát
-    const files = await this.walkDirectory(this.basePath);
-
-    // Az eredményként visszaadott fájlobjektumok ide kerülnek
+    const files = await this.walkDirectory(this.basePath); // Rekurzív fájlbejárás
+    const existingPaths = new Set<string>();               // Fájlnevek gyors kereshetőségéhez
     const results: {
       name: string;
       relativePath: string;
@@ -37,25 +41,26 @@ export class FileService {
       permissionLevel: number;
     }[] = [];
 
-    // Fájlok feldolgozása egyenként
     for (const absPath of files) {
-      const relative = path.relative(this.basePath, absPath);   // relatív útvonal a basePath-hez képest
-      const stats = await fs.stat(absPath);                     // fájlstatisztika lekérése (méret, módosítási idő, stb.)
+      const relative = path.relative(this.basePath, absPath);
+      existingPaths.add(relative);                         // Ezt használjuk később a létezés vizsgálatához
 
-      // Metaadat beolvasása vagy alapértelmezett létrehozása
-      if (!this.meta['Files'][relative]) {
-        this.meta['Files'][relative] = {
+      const stats = await fs.stat(absPath);
+
+      // Metaadat hozzáadása, ha még nem létezik
+      if (!this.meta.Files[relative]) {
+        this.meta.Files[relative] = {
           PermissionLevel: 0,
           Description: '',
           Exist: true,
         };
       } else {
-        this.meta['Files'][relative].Exist = true;
+        // Meglévő meta frissítése
+        this.meta.Files[relative].Exist = true;
       }
 
-      const meta = this.meta['Files'][relative];
+      const meta = this.meta.Files[relative];
 
-      // Az adott fájl adatai bekerülnek a visszatérési tömbbe
       results.push({
         name: path.basename(absPath),
         relativePath: relative,
@@ -66,14 +71,14 @@ export class FileService {
       });
     }
 
-    // Jelöld false-nak azokat, amik már nem léteznek
-    for (const key of Object.keys(this.meta['Files'])) {
-      if (!files.find(f => path.relative(this.basePath, f) === key)) {
-        this.meta['Files'][key].Exist = false;
+    // Metaadatban szereplő, de fizikailag már nem létező fájlok megjelölése
+    for (const key of Object.keys(this.meta.Files)) {
+      if (!existingPaths.has(key)) {
+        this.meta.Files[key].Exist = false;
       }
     }
 
-    // Visszaírhatjuk a meta fájlt, ha szükséges:
+    // Visszaírjuk a frissített metaadatokat (akkor is, ha nem változott sok)
     await fs.writeJson(this.configPath, this.meta, { spaces: 2 });
 
     return results;
@@ -83,17 +88,16 @@ export class FileService {
    * Rekurzívan bejárja az adott könyvtárat, és visszaadja az összes fájl abszolút útvonalát.
    */
   private async walkDirectory(dir: string): Promise<string[]> {
-    let fileList: string[] = [];
-    const items = await fs.readdir(dir);
+    const fileList: string[] = [];
+    const items = await fs.readdir(dir, { withFileTypes: true }); // gyorsabb, mint külön stat
 
     for (const item of items) {
-      const fullPath = path.join(dir, item);
-      const stat = await fs.stat(fullPath);
+      const fullPath = path.join(dir, item.name);
 
-      if (stat.isDirectory()) {
+      if (item.isDirectory()) {
         const subFiles = await this.walkDirectory(fullPath);
-        fileList = fileList.concat(subFiles);
-      } else {
+        fileList.push(...subFiles);
+      } else if (item.isFile()) {
         fileList.push(fullPath);
       }
     }
