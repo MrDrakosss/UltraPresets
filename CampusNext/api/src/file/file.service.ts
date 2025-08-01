@@ -68,7 +68,7 @@ export class FileService {
     const invalidFiles: string[] = [];
 
     for (const absPath of files) {
-      const relative = path.relative(this.basePath, absPath);
+      const relative = path.relative(this.basePath, absPath).replace(/\\/g, '/');
       existingPaths.add(relative);
 
       const stats = await fs.stat(absPath);

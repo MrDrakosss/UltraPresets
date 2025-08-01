@@ -6,7 +6,12 @@
       "Exist": true
     },
     "valami.log": {
-      "PermissionLevel": 3,
+      "PermissionLevel": 1,
+      "Description": "",
+      "Exist": true
+    },
+    "testfolder/fnhsdonhao.txt": {
+      "PermissionLevel": 0,
       "Description": "",
       "Exist": true
     }
