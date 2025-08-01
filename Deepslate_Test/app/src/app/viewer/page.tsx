@@ -3,8 +3,8 @@ import StructureViewer from './StructureViewer'
 
 export default function Home() {
   return (
-    <main className='bg-red-100'>
-      <h1>Deepslate Structure Viewer</h1>
+    <main>
+      <h1 className='font-bold'>Model viewer</h1>
       <StructureViewer />
     </main>
   )

@@ -52,7 +52,7 @@ export class InteractiveCanvas {
 		mat4.rotate(view, view, this.xRotation, [1, 0, 0])
 		mat4.rotate(view, view, this.yRotation, [0, 1, 0])
 		if (this.center) {
-			mat4.translate(view, view, [-this.center[0], -this.center[1], -this.center[2]])
+			mat4.translate(view, view, [-this.center[0], -this.center[1], -this.center[2] + 0.5])
 		}
 
 		this.onRender(view)

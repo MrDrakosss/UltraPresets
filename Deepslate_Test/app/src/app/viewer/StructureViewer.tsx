@@ -21,11 +21,11 @@ export default function StructureViewer() {
 
 
       const structure = new Structure([3, 3, 2])
-      structure.addBlock([1, 0, 0], 'minecraft:iron_block')
-      structure.addBlock([1, 1, 0], 'minecraft:iron_block')
-      structure.addBlock([2, 1, 0], 'minecraft:iron_block')
-      structure.addBlock([0, 1, 0], 'minecraft:iron_block')
-      structure.addBlock([1, 2, 0], 'minecraft:pumpkin')
+      structure.addBlock([1, 2, 0], 'minecraft:pink_terracotta')
+      structure.addBlock([1, 0, 0], 'minecraft:white_terracotta')
+      structure.addBlock([1, 1, 0], 'minecraft:white_terracotta')
+      structure.addBlock([2, 0, 0], 'minecraft:white_terracotta')
+      structure.addBlock([0, 0, 0], 'minecraft:white_terracotta')
 
       const size = structure.getSize() // [width, height, depth]
 
@@ -147,5 +147,5 @@ export default function StructureViewer() {
     render()
   }, [])
 
-  return <canvas ref={canvasRef} width={1920} height={1080} className='bg-amber-500' />
+  return <canvas ref={canvasRef} width={1000} height={800} className='bg-amber-500' />
 }
