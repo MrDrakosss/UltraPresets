@@ -52,7 +52,7 @@ const files: {
     { name: "Thumbnail.jpg", type: "image", size: "0.5MB", parent: "Photos", description: "Indexkép", modified: "2025. 01. 16. 08:50" },
     { name: "Archive.zip", type: "archive", size: "10.5MB", parent: null, description: "TEz a fájl egy ZIP formátumú archívum, amely több projektfájlt tartalmaz tömörített formában.", modified: "2025. 01. 17. 19:20" },
     { name: "Script.js", type: "code", size: "0.1MB", parent: null, description: "JavaScript fájl", modified: "2025. 01. 18. 11:10" },
-    { name: "Assets", type: "folder", size: "-", parent: "Projects", description: "Asset mappa" },
+    { name: "Assets", type: "folder", size: "-", parent: "Projects", description: "Eset Endpoint Security telepítő készletek" },
     { name: "Images", type: "folder", size: "-", parent: "Assets", description: "Képek" },
     { name: "Logo.png", type: "image", size: "0.8MB", parent: "Images", description: "Logó képfájl", modified: "2025. 01. 19. 13:00" },
     { name: "Fonts", type: "folder", size: "-", parent: "Assets", description: "Betűk" },
@@ -69,7 +69,7 @@ const files: {
     { name: "Helpers.js", type: "code", size: "0.15MB", parent: "Projects", description: "Segédfüggvények", modified: "2025. 01. 29. 13:55" },
     { name: "UXNotes.txt", type: "text", size: "0.12MB", parent: "Docs", description: "UX jegyzetek", modified: "2025. 01. 30. 10:00" },
 
-    { name: "Assets", type: "folder", size: "-", parent: null, description: "Képek mappa" },
+    { name: "Assets", type: "folder", size: "-", parent: null, description: "Eset Endpoint Security telepítő készletek" },
   ];
 
 function getFileIcon(type: string) {
@@ -104,21 +104,12 @@ function getFileIcon(type: string) {
 export default function FileStorage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [currentFolder, setCurrentFolder] = useState<string | null>(null);
 
 
   const profileRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, [darkMode]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -154,25 +145,70 @@ export default function FileStorage() {
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Sidebar */}
-      <aside className={`transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'} bg-white dark:bg-gray-800 shadow-md h-screen p-2 flex flex-col justify-between`}>
-        <div>
-          <div className="flex items-center justify-between mb-2 px-2">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700">
-              <Menu />
+      <aside
+        className={`transition-[width] duration-300 ${sidebarOpen ? 'w-64' : 'w-16'
+          } bg-white dark:bg-gray-800 shadow-md h-screen p-2 flex flex-col justify-between`}
+      >
+
+
+        <div className="relative px-1">
+          <div className="flex items-center justify-between mx-1">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-200 cursor-pointer"
+            >
+              <div className="relative w-5 h-5">
+                {/* Vonal 1 */}
+                <span
+                  className={`absolute left-0 top-1/2 w-full h-0.5 bg-current transform transition duration-300 ${sidebarOpen ? 'rotate-45 translate-y-0' : '-translate-y-1'
+                    }`}
+                />
+                {/* Vonal 2 */}
+                <span
+                  className={`absolute left-0 top-1/2 w-full h-0.5 bg-current transform transition duration-300 ${sidebarOpen ? '-rotate-45 translate-y-0' : 'translate-y-1'
+                    }`}
+                />
+              </div>
             </button>
-            {sidebarOpen && <h2 className="text-lg font-bold">CampusNext</h2>}
+
+            {sidebarOpen && (
+              <h2 className="text-lg font-bold ml-2 w-[180px] overflow-hidden text-right">
+                <span
+                  className={`inline-block transition-opacity duration-300 ${sidebarOpen ? 'opacity-100 delay-200' : 'opacity-0 delay-0'
+                    }`}
+                >
+                  CampusNext
+                </span>
+              </h2>
+
+
+
+            )}
+
           </div>
+          <hr className='my-4'></hr>
+
           <nav className="flex flex-col">
             {sidebarLinks.map((link, idx) => (
               <a
                 key={idx}
                 href={link.href}
-                className="flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium"
+                className={`w-full flex items-center py-2 px-2.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium transition-all`}
               >
-                <div className="w-5 h-5 flex justify-center items-center">{link.icon}</div>
-                {sidebarOpen && <span className="ml-2 whitespace-nowrap">{link.label}</span>}
+                <div className="min-w-5 flex justify-center items-center">
+                  {link.icon}
+                </div>
+                <span
+                  className={`ml-2 whitespace-nowrap overflow-hidden transition-all duration-300 ${sidebarOpen ? 'opacity-100 max-w-[180px]' : 'opacity-0 max-w-0'
+                    }`}
+                >
+                  {link.label}
+                </span>
               </a>
+
             ))}
+
+
           </nav>
         </div>
 
@@ -180,11 +216,23 @@ export default function FileStorage() {
         <div ref={profileRef} className="relative px-1">
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="w-full flex items-center px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium"
+            className="w-full flex items-center py-2 px-2.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-sm font-medium transition-all"
           >
-            <User className="w-5 h-5" />
-            {sidebarOpen && <span className="ml-2">Profil</span>}
+            {/* Ikon mindig fix szélességű konténerben */}
+            <div className="min-w-5 flex justify-center items-center">
+              <User className="w-5 h-5" />
+            </div>
+
+            {/* Szöveg animálva */}
+            <span
+              className={`ml-2 whitespace-nowrap overflow-hidden transition-all duration-300 ${sidebarOpen ? 'opacity-100 max-w-[200px]' : 'opacity-0 max-w-0'
+                }`}
+            >
+              Profil
+            </span>
           </button>
+
+
           {profileOpen && (
             <div className="absolute bottom-12 left-0 w-44 bg-white dark:bg-gray-700 rounded-md shadow-md z-10">
               <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm">Profil megtekintés</button>
@@ -196,15 +244,6 @@ export default function FileStorage() {
 
       {/* Main Content */}
       <main className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Fájl Tároló</h1>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-          >
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-        </div>
 
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
@@ -225,10 +264,10 @@ export default function FileStorage() {
           <div className="flex items-center gap-2">
 
             <Input
-              placeholder="Keresés fájlnévre..."
+              placeholder="Keresés..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-40"
+              className="w-64"
             />
             <Select value={filter} onValueChange={setFilter}>
               <SelectItem value="all">Összes</SelectItem>
@@ -257,7 +296,7 @@ export default function FileStorage() {
                   {file.description ? (
                     <>
                       {/* Leírás felül */}
-                      <div className="text-sm text-white dark:text-gray-100 text-center">
+                      <div className="text-sm italic cursor-default text-white dark:text-gray-100 text-center select-none">
                         {file.description}
                       </div>
 
@@ -304,11 +343,17 @@ export default function FileStorage() {
               <p className="font-medium text-sm truncate w-full z-0">{file.name}</p>
 
               {/* Méret vagy elemszám */}
-              <p className="text-xs text-gray-500 dark:text-gray-400 z-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400 z-0 mb-2">
                 {file.type === "folder"
                   ? `${files.filter(f => f.parent === file.name).length} elem`
                   : file.size}
               </p>
+
+              {file.type === "folder" && (
+                <div className="text-sm italic text-white dark:text-gray-100 text-center">
+                  {file.description}
+                </div>
+              )}
 
               {/* Dátum jobb alsó sarokban */}
               {file.modified && (
