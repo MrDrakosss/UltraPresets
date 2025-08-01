@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { formatFileSize } from '../utils/file.utils';
+import { formatDateHu } from '../utils/file.utils';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
@@ -65,7 +66,7 @@ export class FileService {
         name: path.basename(absPath),
         relativePath: relative,
         size: formatFileSize(stats.size),
-        modified: stats.mtime.toISOString(),
+        modified: formatDateHu(stats.mtime.toISOString()),
         description: meta.Description,
         permissionLevel: meta.PermissionLevel,
       });
